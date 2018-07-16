@@ -1,0 +1,31 @@
+{
+    "name": "navatec/php-fixer-git",
+    "description": "Formats modified php files (excluding .blade.php) inside of a git project using php-cs-fixer.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Markus Pfeffermann",
+            "email": "markus.pfeffermann@navatec.de"
+        }
+    ],
+    "require": {
+        "nategood/commando": "^0.3.0",
+        "danielstjules/stringy": "^3.1",
+        "tightenco/collect": "^5.6",
+        "webmozart/path-util": "^2.3",
+        "symfony/process": "3.4.9"
+    },
+    "require-dev": {
+        "macfja/phar-builder": "^0.2.7"
+    },
+    "extra": {
+        "phar-builder": {
+            "compression": "None",
+            "name": "php-fixer-git.phar",
+            "output-dir": "./dist",
+            "entry-point": "./index.php",
+            "include": [],
+            "include-dev": false
+        }
+    }
+}
