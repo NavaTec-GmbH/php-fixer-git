@@ -7,12 +7,12 @@ use Stringy\StaticStringy as S;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path as P;
 
-function writeLn($line)
+function writeLn($line = '')
 {
     fwrite(STDOUT, $line.PHP_EOL);
 }
 
-function writeLnErr($line)
+function writeLnErr($line = '')
 {
     fwrite(STDERR, $line.PHP_EOL);
 }
@@ -22,7 +22,9 @@ function run($cmd, $successCodes = null)
     $successCodes = $successCodes ?? [0];
     $process = new Process($cmd);
     $process->run();
-    if (!in_array($process->getExitCode(), $successCodes)) {
+    $exitCode = $process->getExitCode();
+    if (!in_array($exitCode, $successCodes)) {
+        writeLnErr("php-cs-fixer returned error code {$exitCode}");
         writeLnErr($process->getErrorOutput());
         exit;
     }
@@ -85,25 +87,42 @@ if ($files->count() === 0) {
     exit;
 }
 
-$fixCmdFiles = $files->map(function ($f) { return "\"{$f}\""; })->implode(' ');
-$fixCmd = 'php-cs-fixer fix '.$fixCmdFiles;
-$fixOptions = $cmd['o'];
-
+$fixCmdOptions = $cmd['o'];
 // Look for config if none specified
-if (!S::contains($fixOptions, '--config')) {
+if (!S::contains($fixCmdOptions, '--config')) {
     $fixConfig = P::join($dir, '.php_cs.dist');
     if (file_exists($fixConfig)) {
         writeLn('Using config '.$fixConfig);
-        $fixCmd .= ' --config "'.$fixConfig.'"';
+        $fixCmdOptions .= ' --config "'.$fixConfig.'"';
     }
 }
 
-// Add fixer options to fix command
-if ($fixOptions !== null) {
-    $fixCmd .= ' '.$fixOptions;
+// Chunk up files other we get an error
+$fixFileChunks = $files->map(function ($f) { return "\"{$f}\""; })->chunk(50);
+$multipleChunks = $fixFileChunks->count() > 1;
+if ($multipleChunks) {
+    writeLn("Fixing {$files->count()} files in chunks of 50 files.");
+    writeLn();
+} else {
+    writeLn("Fixing {$files->count()} file(s)");
 }
 
-// Fix files
-writeLn("Fixing {$files->count()} file(s)");
-$fixResult = run($fixCmd, [0, 4, 8]);
-writeLn($fixResult->implode(PHP_EOL));
+// Fix all chunks
+foreach ($fixFileChunks as $i => $chunk) {
+    if ($multipleChunks) {
+        $chunkNo = $i + 1;
+        writeLn("Chunk #{$chunkNo}");
+    }
+    $fixCmdFiles = $chunk->implode(' ');
+    $fixCmd = 'php-cs-fixer fix '.$fixCmdFiles;
+    if ($fixCmdOptions !== null) {
+        $fixCmd .= ' '.$fixCmdOptions;
+    }
+
+    // Fix files
+    $fixResult = run($fixCmd, [0, 4, 8]);
+    writeLn($fixResult->implode(PHP_EOL));
+    if ($multipleChunks) {
+        writeLn();
+    }
+}
