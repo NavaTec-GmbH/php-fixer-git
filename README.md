@@ -7,4 +7,4 @@ Formats modified php files (excluding .blade.php) inside of a git project using 
     build
 
 ## Basic usage
-    php php-fixer-git
+    php php-fixer-git.phar
