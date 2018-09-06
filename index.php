@@ -71,7 +71,7 @@ $files = $gitStatus
         $left = $parts[3];
         $right = $parts[4];
         $fileName = $right ? $right : $left;
-        if (!S::endsWith($fileName, '.php')) {
+        if (!S::endsWith($fileName, '.php') || S::endsWith($fileName, '.blade.php')) {
             return null;
         }
 
