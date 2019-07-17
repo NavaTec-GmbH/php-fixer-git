@@ -16,14 +16,19 @@
         "symfony/process": "3.4.9"
     },
     "require-dev": {
-        "macfja/phar-builder": "^0.2.7"
+        "macfja/phar-builder": "^0.2.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpFixerGit\\": "src/"
+        }
     },
     "extra": {
         "phar-builder": {
             "compression": "None",
             "name": "php-fixer-git.phar",
             "output-dir": "./dist",
-            "entry-point": "./index.php",
+            "entry-point": "./src/index.php",
             "include": [],
             "include-dev": false
         }
