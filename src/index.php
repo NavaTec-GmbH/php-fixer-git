@@ -89,11 +89,15 @@ if ($files->count() === 0) {
 
 $fixCmdOptions = $cmd['o'];
 // Look for config if none specified
-if (!S::contains($fixCmdOptions, '--config')) {
-    $fixConfig = P::join($dir, '.php_cs.dist');
+if (S::contains($fixCmdOptions, '--config')) {
+    writeLn('Using specified config');
+} else {
+    $fixConfig = P::join($dir, '.php-cs-fixer.dist.php');
     if (file_exists($fixConfig)) {
         writeLn('Using config '.$fixConfig);
         $fixCmdOptions .= ' --config "'.$fixConfig.'"';
+    } else {
+        writeLn('Using default config');
     }
 }
 
