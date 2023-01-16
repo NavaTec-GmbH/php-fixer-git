@@ -9,7 +9,7 @@
         }
     ],
     "bin": [
-        "src/index.php"
+        "bin/php-fixer-git"
     ],
     "scripts": {
         "build": "php -r \"@mkdir('dist');\" && composer exec -- phar-composer build . ./dist/php-fixer-git.phar"
