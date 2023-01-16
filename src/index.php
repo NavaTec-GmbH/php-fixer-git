@@ -1,7 +1,5 @@
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
-
 use Stringy\StaticStringy as S;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
