@@ -8,15 +8,16 @@
             "email": "markus.pfeffermann@navatec.de"
         }
     ],
-    "require": {
-        "nategood/commando": "^0.3.0",
-        "danielstjules/stringy": "^3.1",
-        "tightenco/collect": "^5.6",
-        "webmozart/path-util": "^2.3",
-        "symfony/process": "3.4.9"
+    "bin": [
+        "src/index.php"
+    ],
+    "scripts": {
+        "build": "php -r \"@mkdir('dist');\" && composer exec -- phar-composer build . ./dist/php-fixer-git.phar"
     },
-    "require-dev": {
-        "macfja/phar-builder": "^0.2.8"
+    "require": {
+        "danielstjules/stringy": "^3.1",
+        "tightenco/collect": "^9.47",
+        "symfony/console": "^6.2"
     },
     "autoload": {
         "psr-4": {
@@ -32,5 +33,9 @@
             "include": [],
             "include-dev": false
         }
+    },
+    "require-dev": {
+        "clue/phar-composer": "^1.4",
+        "friendsofphp/php-cs-fixer": "^3.13"
     }
 }
